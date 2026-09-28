@@ -44,15 +44,24 @@ scrape_configs:
       - targets: ["my-mac.local:9101"]
 ```
 
-Then import [dashboards/pulseki.json](dashboards/pulseki.json) into Grafana
-(Dashboards → New → Import). It has an Instance dropdown for switching between
-Macs, plus rows for CPU, memory, GPU, storage, network, sensors and power,
-battery, and exporter health. That file is the Kubernetes-style resource that
-Grafana 12.2 and later (including Grafana Cloud) expect; for Grafana 12.1 or
-older, Terraform, or file provisioning use
-[dashboards/pulseki-classic.json](dashboards/pulseki-classic.json), which is
-the same dashboard as a plain object. Grafana dashboard 1860 ("Node Exporter Full")
-also largely works thanks to the shared metric names.
+Then load the Grafana dashboard. It has an Instance dropdown for switching
+between Macs, plus rows for CPU, memory, GPU, storage, network, sensors and
+power, battery, and exporter health. The reliable way on any Grafana version,
+including Grafana Cloud, is the HTTP API: create a service account with the
+Editor role (Administration → Users and access → Service accounts), add a
+token, save it to a file, and run
+
+```bash
+GRAFANA_URL=https://<stack>.grafana.net GRAFANA_TOKEN_FILE=~/.config/grafana/token \
+  scripts/grafana-import.sh
+```
+
+Re-running it updates the dashboard in place. Importing through the UI also
+works but depends on the Grafana version: Grafana 12.2 and later expect the
+resource-wrapped [dashboards/pulseki.json](dashboards/pulseki.json), older
+versions the plain [dashboards/pulseki-classic.json](dashboards/pulseki-classic.json),
+and the newest import editor lints against a schema neither file targets. The
+API route avoids all of that.
 
 ## Configuration
 

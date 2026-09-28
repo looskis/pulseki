@@ -11,6 +11,8 @@ All notable changes to pulseki are recorded here. The format follows
 - `dashboards/pulseki.json`: a Grafana dashboard with an Instance dropdown
   covering every collector, as a Grafana 12.2+ resource; `pulseki-classic.json`
   is the same dashboard as a classic object for older Grafana and provisioning.
+- `scripts/grafana-import.sh`: loads or updates the dashboard through the
+  Grafana HTTP API with a service-account token, on any Grafana version.
 
 ## [0.1.0] - 2026-09-28
 
