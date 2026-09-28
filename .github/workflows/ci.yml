@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+
+jobs:
+  build:
+    name: Build and test (macOS)
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Toolchain
+        run: swift --version
+
+      - name: Build
+        run: swift build -c release
+
+      - name: Unit tests
+        run: swift test
+
+      - name: Smoke test the exporter
+        run: |
+          .build/release/pulseki --version
+          .build/release/pulseki --collectors
+          .build/release/pulseki --listen 127.0.0.1:9101 --disable smc &
+          sleep 2
+          curl -sf http://127.0.0.1:9101/-/healthy
+          curl -sf http://127.0.0.1:9101/metrics > metrics.txt
+          kill %1
+          grep -q 'node_cpu_seconds_total{cpu="0",mode="idle"}' metrics.txt
+          grep -q 'node_memory_total_bytes ' metrics.txt
+          grep -q 'node_filesystem_size_bytes{' metrics.txt
+          grep -q 'node_network_receive_bytes_total{' metrics.txt
+          grep -q 'pulseki_build_info{' metrics.txt
+          for c in cpu load memory filesystem diskstats network thermal battery system; do
+            grep -q "pulseki_scrape_collector_success{collector=\"$c\"} 1" metrics.txt || { echo "collector $c failed"; exit 1; }
+          done
+          echo "$(grep -c '^[a-z]' metrics.txt) samples"
+
+      - name: Validate exposition format
+        run: |
+          python3 -m venv .venv && .venv/bin/pip install -q prometheus_client
+          .venv/bin/python - <<'EOF'
+          from prometheus_client.parser import text_string_to_metric_families
+          fams = list(text_string_to_metric_families(open("metrics.txt").read()))
+          assert fams, "no metric families parsed"
+          print(f"{len(fams)} families, {sum(len(f.samples) for f in fams)} samples")
+          EOF
+
+      - name: Formula style
+        run: brew style Formula/pulseki.rb
