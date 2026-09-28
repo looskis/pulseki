@@ -4,6 +4,13 @@ All notable changes to pulseki are recorded here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and versions follow
 [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+
+- `dashboards/pulseki.json`: a Grafana dashboard with an Instance dropdown
+  covering every collector, importable as-is.
+
 ## [0.1.0] - 2026-09-28
 
 First release.
@@ -29,4 +36,5 @@ First release.
 - `scripts/tailscale-targets.sh` and `docs/fleet.md` for running a fleet of
   Macs behind one Prometheus over Tailscale.
 
+[Unreleased]: https://github.com/looskis/pulseki/compare/v0.1.0...HEAD
 [0.1.0]: https://github.com/looskis/pulseki/releases/tag/v0.1.0

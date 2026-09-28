@@ -143,6 +143,8 @@ without `remote_write` is fine.
 
 ## 5. Dashboards
 
+- Import [`dashboards/pulseki.json`](../dashboards/pulseki.json): one dashboard
+  for all Macs, switch with the Instance dropdown.
 - Import Grafana dashboard **1860** ("Node Exporter Full") and set its job
   variable to `macos`. CPU, load, memory, filesystem, disk and network panels
   work. Panels that rely on Linux-only series (`node_pressure_*`,

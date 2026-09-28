@@ -17,7 +17,8 @@ and can also push them to Grafana Cloud or any OpenTelemetry endpoint.
 
 Documentation: [Configuration](#configuration) ·
 [Getting data out](#getting-data-out) · [Metrics reference](#metrics-reference) ·
-[Running a fleet over Tailscale](docs/fleet.md) · [Troubleshooting](#troubleshooting) ·
+[Running a fleet over Tailscale](docs/fleet.md) · [Grafana dashboard](dashboards/pulseki.json) ·
+[Troubleshooting](#troubleshooting) ·
 [Design](#design) · [Changelog](CHANGELOG.md)
 
 ## Quick start
@@ -43,9 +44,11 @@ scrape_configs:
       - targets: ["my-mac.local:9101"]
 ```
 
-Then import Grafana dashboard 1860 ("Node Exporter Full") for CPU, load,
-memory, filesystem, disk and network panels, and build your own panels for the
-`macos_*` series.
+Then import [dashboards/pulseki.json](dashboards/pulseki.json) into Grafana
+(Dashboards → New → Import). It has an Instance dropdown for switching between
+Macs, plus rows for CPU, memory, GPU, storage, network, sensors and power,
+battery, and exporter health. Grafana dashboard 1860 ("Node Exporter Full")
+also largely works thanks to the shared metric names.
 
 ## Configuration
 
