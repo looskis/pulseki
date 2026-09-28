@@ -9,7 +9,8 @@ All notable changes to pulseki are recorded here. The format follows
 ### Added
 
 - `dashboards/pulseki.json`: a Grafana dashboard with an Instance dropdown
-  covering every collector, importable as-is.
+  covering every collector, as a Grafana 12.2+ resource; `pulseki-classic.json`
+  is the same dashboard as a classic object for older Grafana and provisioning.
 
 ## [0.1.0] - 2026-09-28
 

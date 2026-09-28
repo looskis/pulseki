@@ -1,2758 +1,2763 @@
 {
-  "id": null,
-  "uid": "pulseki-mac",
-  "title": "pulseki \u00b7 Mac overview",
-  "description": "Per-Mac view of pulseki metrics. Switch machines with the Instance dropdown.",
-  "tags": [
-    "pulseki",
-    "macos"
-  ],
-  "timezone": "browser",
-  "editable": true,
-  "graphTooltip": 1,
-  "refresh": "30s",
-  "time": {
-    "from": "now-6h",
-    "to": "now"
+  "apiVersion": "dashboard.grafana.app/v1beta1",
+  "kind": "Dashboard",
+  "metadata": {
+    "name": "pulseki-mac"
   },
-  "schemaVersion": 39,
-  "version": 1,
-  "templating": {
-    "list": [
+  "spec": {
+    "title": "pulseki \u00b7 Mac overview",
+    "description": "Per-Mac view of pulseki metrics. Switch machines with the Instance dropdown.",
+    "tags": [
+      "pulseki",
+      "macos"
+    ],
+    "timezone": "browser",
+    "editable": true,
+    "graphTooltip": 1,
+    "refresh": "30s",
+    "time": {
+      "from": "now-6h",
+      "to": "now"
+    },
+    "schemaVersion": 39,
+    "version": 1,
+    "templating": {
+      "list": [
+        {
+          "name": "DS",
+          "label": "Data source",
+          "type": "datasource",
+          "query": "prometheus",
+          "current": {},
+          "options": [],
+          "refresh": 1,
+          "hide": 0
+        },
+        {
+          "name": "job",
+          "label": "Job",
+          "type": "query",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS}"
+          },
+          "refresh": 2,
+          "sort": 1,
+          "query": {
+            "query": "label_values(pulseki_build_info, job)",
+            "refId": "var"
+          },
+          "definition": "label_values(pulseki_build_info, job)",
+          "includeAll": false,
+          "multi": false,
+          "current": {},
+          "options": []
+        },
+        {
+          "name": "instance",
+          "label": "Instance",
+          "type": "query",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS}"
+          },
+          "refresh": 2,
+          "sort": 1,
+          "query": {
+            "query": "label_values(pulseki_build_info{job=\"$job\"}, instance)",
+            "refId": "var"
+          },
+          "definition": "label_values(pulseki_build_info{job=\"$job\"}, instance)",
+          "includeAll": false,
+          "multi": false,
+          "current": {},
+          "options": []
+        },
+        {
+          "name": "netdev",
+          "label": "Interface",
+          "type": "query",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS}"
+          },
+          "refresh": 2,
+          "sort": 1,
+          "query": {
+            "query": "label_values(node_network_up{job=\"$job\", instance=\"$instance\"}, device)",
+            "refId": "var"
+          },
+          "definition": "label_values(node_network_up{job=\"$job\", instance=\"$instance\"}, device)",
+          "includeAll": true,
+          "multi": true,
+          "current": {
+            "selected": true,
+            "text": [
+              "All"
+            ],
+            "value": [
+              "$__all"
+            ]
+          },
+          "options": [],
+          "regex": "/^(en|utun|bridge)/",
+          "allValue": ".*"
+        },
+        {
+          "name": "sensor",
+          "label": "Temp sensors",
+          "type": "query",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS}"
+          },
+          "refresh": 2,
+          "sort": 1,
+          "query": {
+            "query": "label_values(macos_smc_temperature_celsius{job=\"$job\", instance=\"$instance\"}, sensor)",
+            "refId": "var"
+          },
+          "definition": "label_values(macos_smc_temperature_celsius{job=\"$job\", instance=\"$instance\"}, sensor)",
+          "includeAll": true,
+          "multi": true,
+          "current": {
+            "selected": true,
+            "text": [
+              "TCMb",
+              "TCMz",
+              "TH0x"
+            ],
+            "value": [
+              "TCMb",
+              "TCMz",
+              "TH0x"
+            ]
+          },
+          "options": [],
+          "allValue": ".*"
+        },
+        {
+          "name": "power",
+          "label": "Power keys",
+          "type": "query",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS}"
+          },
+          "refresh": 2,
+          "sort": 1,
+          "query": {
+            "query": "label_values(macos_smc_power_watts{job=\"$job\", instance=\"$instance\"}, key)",
+            "refId": "var"
+          },
+          "definition": "label_values(macos_smc_power_watts{job=\"$job\", instance=\"$instance\"}, key)",
+          "includeAll": true,
+          "multi": true,
+          "current": {
+            "selected": true,
+            "text": [
+              "PSTR",
+              "PDTR"
+            ],
+            "value": [
+              "PSTR",
+              "PDTR"
+            ]
+          },
+          "options": [],
+          "allValue": ".*"
+        }
+      ]
+    },
+    "links": [
       {
-        "name": "DS",
-        "label": "Data source",
-        "type": "datasource",
-        "query": "prometheus",
-        "current": {},
-        "options": [],
-        "refresh": 1,
-        "hide": 0
+        "title": "pulseki on GitHub",
+        "type": "link",
+        "url": "https://github.com/looskis/pulseki",
+        "targetBlank": true
+      }
+    ],
+    "annotations": {
+      "list": [
+        {
+          "builtIn": 1,
+          "datasource": {
+            "type": "grafana",
+            "uid": "-- Grafana --"
+          },
+          "enable": true,
+          "hide": true,
+          "name": "Annotations & Alerts",
+          "type": "dashboard"
+        }
+      ]
+    },
+    "panels": [
+      {
+        "id": 1,
+        "type": "row",
+        "title": "Overview",
+        "collapsed": false,
+        "gridPos": {
+          "x": 0,
+          "y": 0,
+          "w": 24,
+          "h": 1
+        },
+        "panels": []
       },
       {
-        "name": "job",
-        "label": "Job",
-        "type": "query",
+        "id": 2,
+        "type": "stat",
+        "title": "Uptime",
         "datasource": {
           "type": "prometheus",
           "uid": "${DS}"
         },
-        "refresh": 2,
-        "sort": 1,
-        "query": {
-          "query": "label_values(pulseki_build_info, job)",
-          "refId": "var"
+        "gridPos": {
+          "x": 0,
+          "y": 1,
+          "w": 3,
+          "h": 4
         },
-        "definition": "label_values(pulseki_build_info, job)",
-        "includeAll": false,
-        "multi": false,
-        "current": {},
-        "options": []
-      },
-      {
-        "name": "instance",
-        "label": "Instance",
-        "type": "query",
-        "datasource": {
-          "type": "prometheus",
-          "uid": "${DS}"
-        },
-        "refresh": 2,
-        "sort": 1,
-        "query": {
-          "query": "label_values(pulseki_build_info{job=\"$job\"}, instance)",
-          "refId": "var"
-        },
-        "definition": "label_values(pulseki_build_info{job=\"$job\"}, instance)",
-        "includeAll": false,
-        "multi": false,
-        "current": {},
-        "options": []
-      },
-      {
-        "name": "netdev",
-        "label": "Interface",
-        "type": "query",
-        "datasource": {
-          "type": "prometheus",
-          "uid": "${DS}"
-        },
-        "refresh": 2,
-        "sort": 1,
-        "query": {
-          "query": "label_values(node_network_up{job=\"$job\", instance=\"$instance\"}, device)",
-          "refId": "var"
-        },
-        "definition": "label_values(node_network_up{job=\"$job\", instance=\"$instance\"}, device)",
-        "includeAll": true,
-        "multi": true,
-        "current": {
-          "selected": true,
-          "text": [
-            "All"
-          ],
-          "value": [
-            "$__all"
-          ]
-        },
-        "options": [],
-        "regex": "/^(en|utun|bridge)/",
-        "allValue": ".*"
-      },
-      {
-        "name": "sensor",
-        "label": "Temp sensors",
-        "type": "query",
-        "datasource": {
-          "type": "prometheus",
-          "uid": "${DS}"
-        },
-        "refresh": 2,
-        "sort": 1,
-        "query": {
-          "query": "label_values(macos_smc_temperature_celsius{job=\"$job\", instance=\"$instance\"}, sensor)",
-          "refId": "var"
-        },
-        "definition": "label_values(macos_smc_temperature_celsius{job=\"$job\", instance=\"$instance\"}, sensor)",
-        "includeAll": true,
-        "multi": true,
-        "current": {
-          "selected": true,
-          "text": [
-            "TCMb",
-            "TCMz",
-            "TH0x"
-          ],
-          "value": [
-            "TCMb",
-            "TCMz",
-            "TH0x"
-          ]
-        },
-        "options": [],
-        "allValue": ".*"
-      },
-      {
-        "name": "power",
-        "label": "Power keys",
-        "type": "query",
-        "datasource": {
-          "type": "prometheus",
-          "uid": "${DS}"
-        },
-        "refresh": 2,
-        "sort": 1,
-        "query": {
-          "query": "label_values(macos_smc_power_watts{job=\"$job\", instance=\"$instance\"}, key)",
-          "refId": "var"
-        },
-        "definition": "label_values(macos_smc_power_watts{job=\"$job\", instance=\"$instance\"}, key)",
-        "includeAll": true,
-        "multi": true,
-        "current": {
-          "selected": true,
-          "text": [
-            "PSTR",
-            "PDTR"
-          ],
-          "value": [
-            "PSTR",
-            "PDTR"
-          ]
-        },
-        "options": [],
-        "allValue": ".*"
-      }
-    ]
-  },
-  "links": [
-    {
-      "title": "pulseki on GitHub",
-      "type": "link",
-      "url": "https://github.com/looskis/pulseki",
-      "targetBlank": true
-    }
-  ],
-  "annotations": {
-    "list": [
-      {
-        "builtIn": 1,
-        "datasource": {
-          "type": "grafana",
-          "uid": "-- Grafana --"
-        },
-        "enable": true,
-        "hide": true,
-        "name": "Annotations & Alerts",
-        "type": "dashboard"
-      }
-    ]
-  },
-  "panels": [
-    {
-      "id": 1,
-      "type": "row",
-      "title": "Overview",
-      "collapsed": false,
-      "gridPos": {
-        "x": 0,
-        "y": 0,
-        "w": 24,
-        "h": 1
-      },
-      "panels": []
-    },
-    {
-      "id": 2,
-      "type": "stat",
-      "title": "Uptime",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS}"
-      },
-      "gridPos": {
-        "x": 0,
-        "y": 1,
-        "w": 3,
-        "h": 4
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "expr": "time() - node_boot_time_seconds{job=\"$job\", instance=\"$instance\"}",
-          "legendFormat": "",
-          "refId": "A"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "s",
-          "decimals": 1
-        },
-        "overrides": []
-      },
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "colorMode": "none",
-        "graphMode": "none",
-        "textMode": "auto",
-        "orientation": "auto",
-        "justifyMode": "auto"
-      }
-    },
-    {
-      "id": 3,
-      "type": "stat",
-      "title": "CPU busy",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS}"
-      },
-      "gridPos": {
-        "x": 3,
-        "y": 1,
-        "w": 3,
-        "h": 4
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "expr": "100 * (1 - avg(rate(node_cpu_seconds_total{job=\"$job\", instance=\"$instance\", mode=\"idle\"}[$__rate_interval])))",
-          "legendFormat": "",
-          "refId": "A"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "percent",
-          "min": 0,
-          "max": 100,
-          "decimals": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "orange",
-                "value": 70
-              },
-              {
-                "color": "red",
-                "value": 90
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "colorMode": "value",
-        "graphMode": "area",
-        "textMode": "auto",
-        "orientation": "auto",
-        "justifyMode": "auto"
-      }
-    },
-    {
-      "id": 4,
-      "type": "stat",
-      "title": "Memory used",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS}"
-      },
-      "gridPos": {
-        "x": 6,
-        "y": 1,
-        "w": 3,
-        "h": 4
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "expr": "100 * (1 - (node_memory_free_bytes{job=\"$job\", instance=\"$instance\"} + node_memory_inactive_bytes{job=\"$job\", instance=\"$instance\"} + node_memory_purgeable_bytes{job=\"$job\", instance=\"$instance\"}) / node_memory_total_bytes{job=\"$job\", instance=\"$instance\"})",
-          "legendFormat": "",
-          "refId": "A"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "percent",
-          "min": 0,
-          "max": 100,
-          "decimals": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "orange",
-                "value": 70
-              },
-              {
-                "color": "red",
-                "value": 90
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "colorMode": "value",
-        "graphMode": "area",
-        "textMode": "auto",
-        "orientation": "auto",
-        "justifyMode": "auto"
-      }
-    },
-    {
-      "id": 5,
-      "type": "stat",
-      "title": "Memory pressure",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS}"
-      },
-      "gridPos": {
-        "x": 9,
-        "y": 1,
-        "w": 3,
-        "h": 4
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "expr": "macos_memory_pressure_level{job=\"$job\", instance=\"$instance\"}",
-          "legendFormat": "",
-          "refId": "A"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "short",
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "orange",
-                "value": 2
-              },
-              {
-                "color": "red",
-                "value": 4
-              }
-            ]
-          },
-          "mappings": [
-            {
-              "type": "value",
-              "options": {
-                "1": {
-                  "text": "Normal"
-                },
-                "2": {
-                  "text": "Warning"
-                },
-                "4": {
-                  "text": "Critical"
-                }
-              }
-            }
-          ]
-        },
-        "overrides": []
-      },
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "colorMode": "value",
-        "graphMode": "none",
-        "textMode": "auto",
-        "orientation": "auto",
-        "justifyMode": "auto"
-      }
-    },
-    {
-      "id": 6,
-      "type": "stat",
-      "title": "GPU",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS}"
-      },
-      "gridPos": {
-        "x": 12,
-        "y": 1,
-        "w": 3,
-        "h": 4
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "expr": "100 * macos_gpu_device_utilization_ratio{job=\"$job\", instance=\"$instance\"}",
-          "legendFormat": "",
-          "refId": "A"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "percent",
-          "min": 0,
-          "max": 100,
-          "decimals": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "orange",
-                "value": 70
-              },
-              {
-                "color": "red",
-                "value": 90
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "colorMode": "value",
-        "graphMode": "area",
-        "textMode": "auto",
-        "orientation": "auto",
-        "justifyMode": "auto"
-      }
-    },
-    {
-      "id": 7,
-      "type": "stat",
-      "title": "CPU temperature",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS}"
-      },
-      "gridPos": {
-        "x": 15,
-        "y": 1,
-        "w": 3,
-        "h": 4
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "expr": "macos_smc_temperature_celsius{job=\"$job\", instance=\"$instance\", sensor=~\"TCMb|TC0P|TCXC\"}",
-          "legendFormat": "",
-          "refId": "A"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "celsius",
-          "decimals": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "orange",
-                "value": 80
-              },
-              {
-                "color": "red",
-                "value": 95
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "colorMode": "value",
-        "graphMode": "area",
-        "textMode": "auto",
-        "orientation": "auto",
-        "justifyMode": "auto"
-      }
-    },
-    {
-      "id": 8,
-      "type": "stat",
-      "title": "System power",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS}"
-      },
-      "gridPos": {
-        "x": 18,
-        "y": 1,
-        "w": 3,
-        "h": 4
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "expr": "macos_smc_power_watts{job=\"$job\", instance=\"$instance\", key=\"PSTR\"}",
-          "legendFormat": "",
-          "refId": "A"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "watt",
-          "decimals": 1
-        },
-        "overrides": []
-      },
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "colorMode": "none",
-        "graphMode": "area",
-        "textMode": "auto",
-        "orientation": "auto",
-        "justifyMode": "auto"
-      }
-    },
-    {
-      "id": 9,
-      "type": "stat",
-      "title": "Thermal state",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS}"
-      },
-      "gridPos": {
-        "x": 21,
-        "y": 1,
-        "w": 3,
-        "h": 4
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "expr": "macos_thermal_state{job=\"$job\", instance=\"$instance\"}",
-          "legendFormat": "",
-          "refId": "A"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "short",
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 1
-              },
-              {
-                "color": "orange",
-                "value": 2
-              },
-              {
-                "color": "red",
-                "value": 3
-              }
-            ]
-          },
-          "mappings": [
-            {
-              "type": "value",
-              "options": {
-                "0": {
-                  "text": "Nominal"
-                },
-                "1": {
-                  "text": "Fair"
-                },
-                "2": {
-                  "text": "Serious"
-                },
-                "3": {
-                  "text": "Critical"
-                }
-              }
-            }
-          ]
-        },
-        "overrides": []
-      },
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "colorMode": "value",
-        "graphMode": "none",
-        "textMode": "auto",
-        "orientation": "auto",
-        "justifyMode": "auto"
-      }
-    },
-    {
-      "id": 10,
-      "type": "stat",
-      "title": "Model",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS}"
-      },
-      "gridPos": {
-        "x": 0,
-        "y": 5,
-        "w": 6,
-        "h": 3
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "expr": "macos_hardware_info{job=\"$job\", instance=\"$instance\"}",
-          "legendFormat": "{{model}} \u00b7 {{chip}}",
-          "refId": "A",
-          "instant": true,
-          "range": false
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "colorMode": "none",
-        "graphMode": "none",
-        "textMode": "name",
-        "orientation": "auto",
-        "justifyMode": "auto"
-      }
-    },
-    {
-      "id": 11,
-      "type": "stat",
-      "title": "macOS",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS}"
-      },
-      "gridPos": {
-        "x": 6,
-        "y": 5,
-        "w": 4,
-        "h": 3
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "expr": "macos_version_info{job=\"$job\", instance=\"$instance\"}",
-          "legendFormat": "{{version}} ({{build}})",
-          "refId": "A",
-          "instant": true,
-          "range": false
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "colorMode": "none",
-        "graphMode": "none",
-        "textMode": "name",
-        "orientation": "auto",
-        "justifyMode": "auto"
-      }
-    },
-    {
-      "id": 12,
-      "type": "stat",
-      "title": "Cores (P / E)",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS}"
-      },
-      "gridPos": {
-        "x": 10,
-        "y": 5,
-        "w": 5,
-        "h": 3
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "expr": "macos_cpu_perflevel_logical_cpus{job=\"$job\", instance=\"$instance\", name=\"Performance\"}",
-          "legendFormat": "P",
-          "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "expr": "macos_cpu_perflevel_logical_cpus{job=\"$job\", instance=\"$instance\", name=\"Efficiency\"}",
-          "legendFormat": "E",
-          "refId": "B"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "expr": "macos_gpu_cores{job=\"$job\", instance=\"$instance\"}",
-          "legendFormat": "GPU",
-          "refId": "C"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "colorMode": "none",
-        "graphMode": "none",
-        "textMode": "auto",
-        "orientation": "auto",
-        "justifyMode": "auto"
-      }
-    },
-    {
-      "id": 13,
-      "type": "stat",
-      "title": "Processes",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS}"
-      },
-      "gridPos": {
-        "x": 15,
-        "y": 5,
-        "w": 3,
-        "h": 3
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "expr": "macos_processes{job=\"$job\", instance=\"$instance\"}",
-          "legendFormat": "",
-          "refId": "A"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "colorMode": "none",
-        "graphMode": "none",
-        "textMode": "auto",
-        "orientation": "auto",
-        "justifyMode": "auto"
-      }
-    },
-    {
-      "id": 14,
-      "type": "stat",
-      "title": "Load 1 / 5 / 15",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS}"
-      },
-      "gridPos": {
-        "x": 18,
-        "y": 5,
-        "w": 6,
-        "h": 3
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "expr": "node_load1{job=\"$job\", instance=\"$instance\"}",
-          "legendFormat": "1m",
-          "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "expr": "node_load5{job=\"$job\", instance=\"$instance\"}",
-          "legendFormat": "5m",
-          "refId": "B"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "expr": "node_load15{job=\"$job\", instance=\"$instance\"}",
-          "legendFormat": "15m",
-          "refId": "C"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "short",
-          "decimals": 2
-        },
-        "overrides": []
-      },
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "colorMode": "none",
-        "graphMode": "none",
-        "textMode": "auto",
-        "orientation": "auto",
-        "justifyMode": "auto"
-      }
-    },
-    {
-      "id": 15,
-      "type": "row",
-      "title": "CPU",
-      "collapsed": false,
-      "gridPos": {
-        "x": 0,
-        "y": 8,
-        "w": 24,
-        "h": 1
-      },
-      "panels": []
-    },
-    {
-      "id": 16,
-      "type": "timeseries",
-      "title": "CPU by mode",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS}"
-      },
-      "gridPos": {
-        "x": 0,
-        "y": 9,
-        "w": 12,
-        "h": 8
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "expr": "100 * avg(rate(node_cpu_seconds_total{job=\"$job\", instance=\"$instance\", mode!=\"idle\"}[$__rate_interval])) by (mode)",
-          "legendFormat": "{{mode}}",
-          "refId": "A"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "percent",
-          "min": 0,
-          "max": 100,
-          "custom": {
-            "lineWidth": 1,
-            "fillOpacity": 30,
-            "showPoints": "never",
-            "stacking": {
-              "mode": "normal"
-            }
-          }
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "displayMode": "list",
-          "placement": "bottom",
-          "calcs": []
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      }
-    },
-    {
-      "id": 17,
-      "type": "timeseries",
-      "title": "Busy per core",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS}"
-      },
-      "gridPos": {
-        "x": 12,
-        "y": 9,
-        "w": 12,
-        "h": 8
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "expr": "100 * (1 - rate(node_cpu_seconds_total{job=\"$job\", instance=\"$instance\", mode=\"idle\"}[$__rate_interval]))",
-          "legendFormat": "cpu {{cpu}}",
-          "refId": "A"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "percent",
-          "min": 0,
-          "max": 100,
-          "custom": {
-            "lineWidth": 1,
-            "fillOpacity": 0,
-            "showPoints": "never",
-            "stacking": {
-              "mode": "none"
-            }
-          }
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "displayMode": "list",
-          "placement": "bottom",
-          "calcs": []
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      }
-    },
-    {
-      "id": 18,
-      "type": "timeseries",
-      "title": "Load average",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS}"
-      },
-      "gridPos": {
-        "x": 0,
-        "y": 17,
-        "w": 12,
-        "h": 7
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "expr": "node_load1{job=\"$job\", instance=\"$instance\"}",
-          "legendFormat": "1m",
-          "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "expr": "node_load5{job=\"$job\", instance=\"$instance\"}",
-          "legendFormat": "5m",
-          "refId": "B"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "expr": "node_load15{job=\"$job\", instance=\"$instance\"}",
-          "legendFormat": "15m",
-          "refId": "C"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "expr": "macos_cpu_logical_cpus{job=\"$job\", instance=\"$instance\"}",
-          "legendFormat": "logical CPUs",
-          "refId": "D"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "short",
-          "custom": {
-            "lineWidth": 1,
-            "fillOpacity": 0,
-            "showPoints": "never",
-            "stacking": {
-              "mode": "none"
-            }
-          }
-        },
-        "overrides": [
+        "targets": [
           {
-            "matcher": {
-              "id": "byName",
-              "options": "logical CPUs"
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
             },
-            "properties": [
+            "expr": "time() - node_boot_time_seconds{job=\"$job\", instance=\"$instance\"}",
+            "legendFormat": "",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "s",
+            "decimals": 1
+          },
+          "overrides": []
+        },
+        "options": {
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "colorMode": "none",
+          "graphMode": "none",
+          "textMode": "auto",
+          "orientation": "auto",
+          "justifyMode": "auto"
+        }
+      },
+      {
+        "id": 3,
+        "type": "stat",
+        "title": "CPU busy",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS}"
+        },
+        "gridPos": {
+          "x": 3,
+          "y": 1,
+          "w": 3,
+          "h": 4
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "expr": "100 * (1 - avg(rate(node_cpu_seconds_total{job=\"$job\", instance=\"$instance\", mode=\"idle\"}[$__rate_interval])))",
+            "legendFormat": "",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "min": 0,
+            "max": 100,
+            "decimals": 0,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "orange",
+                  "value": 70
+                },
+                {
+                  "color": "red",
+                  "value": 90
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "colorMode": "value",
+          "graphMode": "area",
+          "textMode": "auto",
+          "orientation": "auto",
+          "justifyMode": "auto"
+        }
+      },
+      {
+        "id": 4,
+        "type": "stat",
+        "title": "Memory used",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS}"
+        },
+        "gridPos": {
+          "x": 6,
+          "y": 1,
+          "w": 3,
+          "h": 4
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "expr": "100 * (1 - (node_memory_free_bytes{job=\"$job\", instance=\"$instance\"} + node_memory_inactive_bytes{job=\"$job\", instance=\"$instance\"} + node_memory_purgeable_bytes{job=\"$job\", instance=\"$instance\"}) / node_memory_total_bytes{job=\"$job\", instance=\"$instance\"})",
+            "legendFormat": "",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "min": 0,
+            "max": 100,
+            "decimals": 0,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "orange",
+                  "value": 70
+                },
+                {
+                  "color": "red",
+                  "value": 90
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "colorMode": "value",
+          "graphMode": "area",
+          "textMode": "auto",
+          "orientation": "auto",
+          "justifyMode": "auto"
+        }
+      },
+      {
+        "id": 5,
+        "type": "stat",
+        "title": "Memory pressure",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS}"
+        },
+        "gridPos": {
+          "x": 9,
+          "y": 1,
+          "w": 3,
+          "h": 4
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "expr": "macos_memory_pressure_level{job=\"$job\", instance=\"$instance\"}",
+            "legendFormat": "",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "orange",
+                  "value": 2
+                },
+                {
+                  "color": "red",
+                  "value": 4
+                }
+              ]
+            },
+            "mappings": [
               {
-                "id": "custom.lineStyle",
-                "value": {
-                  "fill": "dash",
-                  "dash": [
-                    10,
-                    10
+                "type": "value",
+                "options": {
+                  "1": {
+                    "text": "Normal"
+                  },
+                  "2": {
+                    "text": "Warning"
+                  },
+                  "4": {
+                    "text": "Critical"
+                  }
+                }
+              }
+            ]
+          },
+          "overrides": []
+        },
+        "options": {
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "colorMode": "value",
+          "graphMode": "none",
+          "textMode": "auto",
+          "orientation": "auto",
+          "justifyMode": "auto"
+        }
+      },
+      {
+        "id": 6,
+        "type": "stat",
+        "title": "GPU",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS}"
+        },
+        "gridPos": {
+          "x": 12,
+          "y": 1,
+          "w": 3,
+          "h": 4
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "expr": "100 * macos_gpu_device_utilization_ratio{job=\"$job\", instance=\"$instance\"}",
+            "legendFormat": "",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "min": 0,
+            "max": 100,
+            "decimals": 0,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "orange",
+                  "value": 70
+                },
+                {
+                  "color": "red",
+                  "value": 90
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "colorMode": "value",
+          "graphMode": "area",
+          "textMode": "auto",
+          "orientation": "auto",
+          "justifyMode": "auto"
+        }
+      },
+      {
+        "id": 7,
+        "type": "stat",
+        "title": "CPU temperature",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS}"
+        },
+        "gridPos": {
+          "x": 15,
+          "y": 1,
+          "w": 3,
+          "h": 4
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "expr": "macos_smc_temperature_celsius{job=\"$job\", instance=\"$instance\", sensor=~\"TCMb|TC0P|TCXC\"}",
+            "legendFormat": "",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "celsius",
+            "decimals": 0,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "orange",
+                  "value": 80
+                },
+                {
+                  "color": "red",
+                  "value": 95
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "colorMode": "value",
+          "graphMode": "area",
+          "textMode": "auto",
+          "orientation": "auto",
+          "justifyMode": "auto"
+        }
+      },
+      {
+        "id": 8,
+        "type": "stat",
+        "title": "System power",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS}"
+        },
+        "gridPos": {
+          "x": 18,
+          "y": 1,
+          "w": 3,
+          "h": 4
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "expr": "macos_smc_power_watts{job=\"$job\", instance=\"$instance\", key=\"PSTR\"}",
+            "legendFormat": "",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "watt",
+            "decimals": 1
+          },
+          "overrides": []
+        },
+        "options": {
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "colorMode": "none",
+          "graphMode": "area",
+          "textMode": "auto",
+          "orientation": "auto",
+          "justifyMode": "auto"
+        }
+      },
+      {
+        "id": 9,
+        "type": "stat",
+        "title": "Thermal state",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS}"
+        },
+        "gridPos": {
+          "x": 21,
+          "y": 1,
+          "w": 3,
+          "h": 4
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "expr": "macos_thermal_state{job=\"$job\", instance=\"$instance\"}",
+            "legendFormat": "",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "yellow",
+                  "value": 1
+                },
+                {
+                  "color": "orange",
+                  "value": 2
+                },
+                {
+                  "color": "red",
+                  "value": 3
+                }
+              ]
+            },
+            "mappings": [
+              {
+                "type": "value",
+                "options": {
+                  "0": {
+                    "text": "Nominal"
+                  },
+                  "1": {
+                    "text": "Fair"
+                  },
+                  "2": {
+                    "text": "Serious"
+                  },
+                  "3": {
+                    "text": "Critical"
+                  }
+                }
+              }
+            ]
+          },
+          "overrides": []
+        },
+        "options": {
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "colorMode": "value",
+          "graphMode": "none",
+          "textMode": "auto",
+          "orientation": "auto",
+          "justifyMode": "auto"
+        }
+      },
+      {
+        "id": 10,
+        "type": "stat",
+        "title": "Model",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS}"
+        },
+        "gridPos": {
+          "x": 0,
+          "y": 5,
+          "w": 6,
+          "h": 3
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "expr": "macos_hardware_info{job=\"$job\", instance=\"$instance\"}",
+            "legendFormat": "{{model}} \u00b7 {{chip}}",
+            "refId": "A",
+            "instant": true,
+            "range": false
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short"
+          },
+          "overrides": []
+        },
+        "options": {
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "colorMode": "none",
+          "graphMode": "none",
+          "textMode": "name",
+          "orientation": "auto",
+          "justifyMode": "auto"
+        }
+      },
+      {
+        "id": 11,
+        "type": "stat",
+        "title": "macOS",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS}"
+        },
+        "gridPos": {
+          "x": 6,
+          "y": 5,
+          "w": 4,
+          "h": 3
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "expr": "macos_version_info{job=\"$job\", instance=\"$instance\"}",
+            "legendFormat": "{{version}} ({{build}})",
+            "refId": "A",
+            "instant": true,
+            "range": false
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short"
+          },
+          "overrides": []
+        },
+        "options": {
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "colorMode": "none",
+          "graphMode": "none",
+          "textMode": "name",
+          "orientation": "auto",
+          "justifyMode": "auto"
+        }
+      },
+      {
+        "id": 12,
+        "type": "stat",
+        "title": "Cores (P / E)",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS}"
+        },
+        "gridPos": {
+          "x": 10,
+          "y": 5,
+          "w": 5,
+          "h": 3
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "expr": "macos_cpu_perflevel_logical_cpus{job=\"$job\", instance=\"$instance\", name=\"Performance\"}",
+            "legendFormat": "P",
+            "refId": "A"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "expr": "macos_cpu_perflevel_logical_cpus{job=\"$job\", instance=\"$instance\", name=\"Efficiency\"}",
+            "legendFormat": "E",
+            "refId": "B"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "expr": "macos_gpu_cores{job=\"$job\", instance=\"$instance\"}",
+            "legendFormat": "GPU",
+            "refId": "C"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short"
+          },
+          "overrides": []
+        },
+        "options": {
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "colorMode": "none",
+          "graphMode": "none",
+          "textMode": "auto",
+          "orientation": "auto",
+          "justifyMode": "auto"
+        }
+      },
+      {
+        "id": 13,
+        "type": "stat",
+        "title": "Processes",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS}"
+        },
+        "gridPos": {
+          "x": 15,
+          "y": 5,
+          "w": 3,
+          "h": 3
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "expr": "macos_processes{job=\"$job\", instance=\"$instance\"}",
+            "legendFormat": "",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short"
+          },
+          "overrides": []
+        },
+        "options": {
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "colorMode": "none",
+          "graphMode": "none",
+          "textMode": "auto",
+          "orientation": "auto",
+          "justifyMode": "auto"
+        }
+      },
+      {
+        "id": 14,
+        "type": "stat",
+        "title": "Load 1 / 5 / 15",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS}"
+        },
+        "gridPos": {
+          "x": 18,
+          "y": 5,
+          "w": 6,
+          "h": 3
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "expr": "node_load1{job=\"$job\", instance=\"$instance\"}",
+            "legendFormat": "1m",
+            "refId": "A"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "expr": "node_load5{job=\"$job\", instance=\"$instance\"}",
+            "legendFormat": "5m",
+            "refId": "B"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "expr": "node_load15{job=\"$job\", instance=\"$instance\"}",
+            "legendFormat": "15m",
+            "refId": "C"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short",
+            "decimals": 2
+          },
+          "overrides": []
+        },
+        "options": {
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "colorMode": "none",
+          "graphMode": "none",
+          "textMode": "auto",
+          "orientation": "auto",
+          "justifyMode": "auto"
+        }
+      },
+      {
+        "id": 15,
+        "type": "row",
+        "title": "CPU",
+        "collapsed": false,
+        "gridPos": {
+          "x": 0,
+          "y": 8,
+          "w": 24,
+          "h": 1
+        },
+        "panels": []
+      },
+      {
+        "id": 16,
+        "type": "timeseries",
+        "title": "CPU by mode",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS}"
+        },
+        "gridPos": {
+          "x": 0,
+          "y": 9,
+          "w": 12,
+          "h": 8
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "expr": "100 * avg(rate(node_cpu_seconds_total{job=\"$job\", instance=\"$instance\", mode!=\"idle\"}[$__rate_interval])) by (mode)",
+            "legendFormat": "{{mode}}",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "min": 0,
+            "max": 100,
+            "custom": {
+              "lineWidth": 1,
+              "fillOpacity": 30,
+              "showPoints": "never",
+              "stacking": {
+                "mode": "normal"
+              }
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "displayMode": "list",
+            "placement": "bottom",
+            "calcs": []
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        }
+      },
+      {
+        "id": 17,
+        "type": "timeseries",
+        "title": "Busy per core",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS}"
+        },
+        "gridPos": {
+          "x": 12,
+          "y": 9,
+          "w": 12,
+          "h": 8
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "expr": "100 * (1 - rate(node_cpu_seconds_total{job=\"$job\", instance=\"$instance\", mode=\"idle\"}[$__rate_interval]))",
+            "legendFormat": "cpu {{cpu}}",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "min": 0,
+            "max": 100,
+            "custom": {
+              "lineWidth": 1,
+              "fillOpacity": 0,
+              "showPoints": "never",
+              "stacking": {
+                "mode": "none"
+              }
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "displayMode": "list",
+            "placement": "bottom",
+            "calcs": []
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        }
+      },
+      {
+        "id": 18,
+        "type": "timeseries",
+        "title": "Load average",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS}"
+        },
+        "gridPos": {
+          "x": 0,
+          "y": 17,
+          "w": 12,
+          "h": 7
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "expr": "node_load1{job=\"$job\", instance=\"$instance\"}",
+            "legendFormat": "1m",
+            "refId": "A"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "expr": "node_load5{job=\"$job\", instance=\"$instance\"}",
+            "legendFormat": "5m",
+            "refId": "B"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "expr": "node_load15{job=\"$job\", instance=\"$instance\"}",
+            "legendFormat": "15m",
+            "refId": "C"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "expr": "macos_cpu_logical_cpus{job=\"$job\", instance=\"$instance\"}",
+            "legendFormat": "logical CPUs",
+            "refId": "D"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short",
+            "custom": {
+              "lineWidth": 1,
+              "fillOpacity": 0,
+              "showPoints": "never",
+              "stacking": {
+                "mode": "none"
+              }
+            }
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "logical CPUs"
+              },
+              "properties": [
+                {
+                  "id": "custom.lineStyle",
+                  "value": {
+                    "fill": "dash",
+                    "dash": [
+                      10,
+                      10
+                    ]
+                  }
+                },
+                {
+                  "id": "color",
+                  "value": {
+                    "mode": "fixed",
+                    "fixedColor": "gray"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "options": {
+          "legend": {
+            "displayMode": "list",
+            "placement": "bottom",
+            "calcs": []
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        }
+      },
+      {
+        "id": 19,
+        "type": "timeseries",
+        "title": "Thermal state and memory pressure",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS}"
+        },
+        "gridPos": {
+          "x": 12,
+          "y": 17,
+          "w": 12,
+          "h": 7
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "expr": "macos_thermal_state{job=\"$job\", instance=\"$instance\"}",
+            "legendFormat": "thermal (0-3)",
+            "refId": "A"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "expr": "macos_memory_pressure_level{job=\"$job\", instance=\"$instance\"}",
+            "legendFormat": "pressure (1/2/4)",
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short",
+            "min": 0,
+            "custom": {
+              "lineWidth": 1,
+              "fillOpacity": 0,
+              "showPoints": "never",
+              "stacking": {
+                "mode": "none"
+              }
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "displayMode": "list",
+            "placement": "bottom",
+            "calcs": []
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        }
+      },
+      {
+        "id": 20,
+        "type": "row",
+        "title": "Memory",
+        "collapsed": false,
+        "gridPos": {
+          "x": 0,
+          "y": 24,
+          "w": 24,
+          "h": 1
+        },
+        "panels": []
+      },
+      {
+        "id": 21,
+        "type": "timeseries",
+        "title": "Memory breakdown",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS}"
+        },
+        "gridPos": {
+          "x": 0,
+          "y": 25,
+          "w": 12,
+          "h": 8
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "expr": "macos_memory_app_bytes{job=\"$job\", instance=\"$instance\"}",
+            "legendFormat": "app",
+            "refId": "A"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "expr": "node_memory_wired_bytes{job=\"$job\", instance=\"$instance\"}",
+            "legendFormat": "wired",
+            "refId": "B"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "expr": "node_memory_compressed_bytes{job=\"$job\", instance=\"$instance\"}",
+            "legendFormat": "compressed",
+            "refId": "C"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "expr": "macos_memory_external_bytes{job=\"$job\", instance=\"$instance\"}",
+            "legendFormat": "file cache",
+            "refId": "D"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "expr": "node_memory_free_bytes{job=\"$job\", instance=\"$instance\"}",
+            "legendFormat": "free",
+            "refId": "E"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "bytes",
+            "min": 0,
+            "custom": {
+              "lineWidth": 1,
+              "fillOpacity": 40,
+              "showPoints": "never",
+              "stacking": {
+                "mode": "normal"
+              }
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "displayMode": "list",
+            "placement": "bottom",
+            "calcs": []
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        }
+      },
+      {
+        "id": 22,
+        "type": "timeseries",
+        "title": "Swap",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS}"
+        },
+        "gridPos": {
+          "x": 12,
+          "y": 25,
+          "w": 6,
+          "h": 8
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "expr": "node_memory_swap_used_bytes{job=\"$job\", instance=\"$instance\"}",
+            "legendFormat": "used",
+            "refId": "A"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "expr": "node_memory_swap_total_bytes{job=\"$job\", instance=\"$instance\"}",
+            "legendFormat": "total",
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "bytes",
+            "min": 0,
+            "custom": {
+              "lineWidth": 1,
+              "fillOpacity": 20,
+              "showPoints": "never",
+              "stacking": {
+                "mode": "none"
+              }
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "displayMode": "list",
+            "placement": "bottom",
+            "calcs": []
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        }
+      },
+      {
+        "id": 23,
+        "type": "timeseries",
+        "title": "Paging and compression",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS}"
+        },
+        "gridPos": {
+          "x": 18,
+          "y": 25,
+          "w": 6,
+          "h": 8
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "expr": "rate(macos_memory_pageins_total{job=\"$job\", instance=\"$instance\"}[$__rate_interval])",
+            "legendFormat": "page-ins/s",
+            "refId": "A"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "expr": "rate(macos_memory_pageouts_total{job=\"$job\", instance=\"$instance\"}[$__rate_interval])",
+            "legendFormat": "page-outs/s",
+            "refId": "B"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "expr": "rate(macos_memory_compressions_total{job=\"$job\", instance=\"$instance\"}[$__rate_interval])",
+            "legendFormat": "compressions/s",
+            "refId": "C"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "expr": "rate(macos_memory_decompressions_total{job=\"$job\", instance=\"$instance\"}[$__rate_interval])",
+            "legendFormat": "decompressions/s",
+            "refId": "D"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "ops",
+            "custom": {
+              "lineWidth": 1,
+              "fillOpacity": 0,
+              "showPoints": "never",
+              "stacking": {
+                "mode": "none"
+              }
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "displayMode": "list",
+            "placement": "bottom",
+            "calcs": []
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        }
+      },
+      {
+        "id": 24,
+        "type": "row",
+        "title": "GPU",
+        "collapsed": false,
+        "gridPos": {
+          "x": 0,
+          "y": 33,
+          "w": 24,
+          "h": 1
+        },
+        "panels": []
+      },
+      {
+        "id": 25,
+        "type": "timeseries",
+        "title": "GPU utilisation",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS}"
+        },
+        "gridPos": {
+          "x": 0,
+          "y": 34,
+          "w": 12,
+          "h": 7
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "expr": "100 * macos_gpu_device_utilization_ratio{job=\"$job\", instance=\"$instance\"}",
+            "legendFormat": "device",
+            "refId": "A"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "expr": "100 * macos_gpu_renderer_utilization_ratio{job=\"$job\", instance=\"$instance\"}",
+            "legendFormat": "renderer",
+            "refId": "B"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "expr": "100 * macos_gpu_tiler_utilization_ratio{job=\"$job\", instance=\"$instance\"}",
+            "legendFormat": "tiler",
+            "refId": "C"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "min": 0,
+            "max": 100,
+            "custom": {
+              "lineWidth": 1,
+              "fillOpacity": 10,
+              "showPoints": "never",
+              "stacking": {
+                "mode": "none"
+              }
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "displayMode": "list",
+            "placement": "bottom",
+            "calcs": []
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        }
+      },
+      {
+        "id": 26,
+        "type": "timeseries",
+        "title": "GPU memory",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS}"
+        },
+        "gridPos": {
+          "x": 12,
+          "y": 34,
+          "w": 12,
+          "h": 7
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "expr": "macos_gpu_memory_in_use_bytes{job=\"$job\", instance=\"$instance\"}",
+            "legendFormat": "in use",
+            "refId": "A"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "expr": "macos_gpu_memory_allocated_bytes{job=\"$job\", instance=\"$instance\"}",
+            "legendFormat": "allocated",
+            "refId": "B"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "expr": "macos_gpu_memory_driver_in_use_bytes{job=\"$job\", instance=\"$instance\"}",
+            "legendFormat": "driver",
+            "refId": "C"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "bytes",
+            "min": 0,
+            "custom": {
+              "lineWidth": 1,
+              "fillOpacity": 10,
+              "showPoints": "never",
+              "stacking": {
+                "mode": "none"
+              }
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "displayMode": "list",
+            "placement": "bottom",
+            "calcs": []
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        }
+      },
+      {
+        "id": 27,
+        "type": "row",
+        "title": "Storage",
+        "collapsed": false,
+        "gridPos": {
+          "x": 0,
+          "y": 41,
+          "w": 24,
+          "h": 1
+        },
+        "panels": []
+      },
+      {
+        "id": 28,
+        "type": "bargauge",
+        "title": "Filesystem used",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS}"
+        },
+        "gridPos": {
+          "x": 0,
+          "y": 42,
+          "w": 8,
+          "h": 8
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "expr": "100 * (1 - node_filesystem_avail_bytes{job=\"$job\", instance=\"$instance\", fstype!=\"devfs\"} / node_filesystem_size_bytes{job=\"$job\", instance=\"$instance\", fstype!=\"devfs\"})",
+            "legendFormat": "{{mountpoint}}",
+            "refId": "A",
+            "instant": true,
+            "range": false
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "min": 0,
+            "max": 100,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "orange",
+                  "value": 80
+                },
+                {
+                  "color": "red",
+                  "value": 90
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "orientation": "horizontal",
+          "displayMode": "gradient",
+          "showUnfilled": true,
+          "namePlacement": "left",
+          "sizing": "auto"
+        }
+      },
+      {
+        "id": 29,
+        "type": "timeseries",
+        "title": "Disk throughput",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS}"
+        },
+        "gridPos": {
+          "x": 8,
+          "y": 42,
+          "w": 8,
+          "h": 8
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "expr": "rate(node_disk_read_bytes_total{job=\"$job\", instance=\"$instance\"}[$__rate_interval])",
+            "legendFormat": "{{device}} read",
+            "refId": "A"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "expr": "-rate(node_disk_written_bytes_total{job=\"$job\", instance=\"$instance\"}[$__rate_interval])",
+            "legendFormat": "{{device}} write",
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "Bps",
+            "custom": {
+              "lineWidth": 1,
+              "fillOpacity": 20,
+              "showPoints": "never",
+              "stacking": {
+                "mode": "none"
+              }
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "displayMode": "list",
+            "placement": "bottom",
+            "calcs": []
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        }
+      },
+      {
+        "id": 30,
+        "type": "timeseries",
+        "title": "Disk IOPS",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS}"
+        },
+        "gridPos": {
+          "x": 16,
+          "y": 42,
+          "w": 8,
+          "h": 8
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "expr": "rate(node_disk_reads_completed_total{job=\"$job\", instance=\"$instance\"}[$__rate_interval])",
+            "legendFormat": "{{device}} reads",
+            "refId": "A"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "expr": "-rate(node_disk_writes_completed_total{job=\"$job\", instance=\"$instance\"}[$__rate_interval])",
+            "legendFormat": "{{device}} writes",
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "iops",
+            "custom": {
+              "lineWidth": 1,
+              "fillOpacity": 20,
+              "showPoints": "never",
+              "stacking": {
+                "mode": "none"
+              }
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "displayMode": "list",
+            "placement": "bottom",
+            "calcs": []
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        }
+      },
+      {
+        "id": 31,
+        "type": "row",
+        "title": "Network",
+        "collapsed": false,
+        "gridPos": {
+          "x": 0,
+          "y": 50,
+          "w": 24,
+          "h": 1
+        },
+        "panels": []
+      },
+      {
+        "id": 32,
+        "type": "timeseries",
+        "title": "Network throughput",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS}"
+        },
+        "gridPos": {
+          "x": 0,
+          "y": 51,
+          "w": 12,
+          "h": 8
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "expr": "rate(node_network_receive_bytes_total{job=\"$job\", instance=\"$instance\", device=~\"$netdev\"}[$__rate_interval]) * 8",
+            "legendFormat": "{{device}} rx",
+            "refId": "A"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "expr": "-rate(node_network_transmit_bytes_total{job=\"$job\", instance=\"$instance\", device=~\"$netdev\"}[$__rate_interval]) * 8",
+            "legendFormat": "{{device}} tx",
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "bps",
+            "custom": {
+              "lineWidth": 1,
+              "fillOpacity": 20,
+              "showPoints": "never",
+              "stacking": {
+                "mode": "none"
+              }
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "displayMode": "list",
+            "placement": "bottom",
+            "calcs": []
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        }
+      },
+      {
+        "id": 33,
+        "type": "timeseries",
+        "title": "Packets",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS}"
+        },
+        "gridPos": {
+          "x": 12,
+          "y": 51,
+          "w": 6,
+          "h": 8
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "expr": "rate(node_network_receive_packets_total{job=\"$job\", instance=\"$instance\", device=~\"$netdev\"}[$__rate_interval])",
+            "legendFormat": "{{device}} rx",
+            "refId": "A"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "expr": "-rate(node_network_transmit_packets_total{job=\"$job\", instance=\"$instance\", device=~\"$netdev\"}[$__rate_interval])",
+            "legendFormat": "{{device}} tx",
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "pps",
+            "custom": {
+              "lineWidth": 1,
+              "fillOpacity": 20,
+              "showPoints": "never",
+              "stacking": {
+                "mode": "none"
+              }
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "displayMode": "list",
+            "placement": "bottom",
+            "calcs": []
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        }
+      },
+      {
+        "id": 34,
+        "type": "timeseries",
+        "title": "Errors and drops",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS}"
+        },
+        "gridPos": {
+          "x": 18,
+          "y": 51,
+          "w": 6,
+          "h": 8
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "expr": "rate(node_network_receive_errs_total{job=\"$job\", instance=\"$instance\", device=~\"$netdev\"}[$__rate_interval])",
+            "legendFormat": "{{device}} rx errs",
+            "refId": "A"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "expr": "rate(node_network_transmit_errs_total{job=\"$job\", instance=\"$instance\", device=~\"$netdev\"}[$__rate_interval])",
+            "legendFormat": "{{device}} tx errs",
+            "refId": "B"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "expr": "rate(node_network_receive_drop_total{job=\"$job\", instance=\"$instance\", device=~\"$netdev\"}[$__rate_interval])",
+            "legendFormat": "{{device}} rx drops",
+            "refId": "C"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "expr": "rate(node_network_transmit_drop_total{job=\"$job\", instance=\"$instance\", device=~\"$netdev\"}[$__rate_interval])",
+            "legendFormat": "{{device}} tx drops",
+            "refId": "D"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "pps",
+            "custom": {
+              "lineWidth": 1,
+              "fillOpacity": 0,
+              "showPoints": "never",
+              "stacking": {
+                "mode": "none"
+              }
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "displayMode": "list",
+            "placement": "bottom",
+            "calcs": []
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        }
+      },
+      {
+        "id": 35,
+        "type": "row",
+        "title": "Sensors and power",
+        "collapsed": false,
+        "gridPos": {
+          "x": 0,
+          "y": 59,
+          "w": 24,
+          "h": 1
+        },
+        "panels": []
+      },
+      {
+        "id": 36,
+        "type": "timeseries",
+        "title": "Temperatures",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS}"
+        },
+        "gridPos": {
+          "x": 0,
+          "y": 60,
+          "w": 12,
+          "h": 8
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "expr": "macos_smc_temperature_celsius{job=\"$job\", instance=\"$instance\", sensor=~\"$sensor\"}",
+            "legendFormat": "{{sensor}}",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "celsius",
+            "custom": {
+              "lineWidth": 1,
+              "fillOpacity": 0,
+              "showPoints": "never",
+              "stacking": {
+                "mode": "none"
+              }
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "displayMode": "list",
+            "placement": "bottom",
+            "calcs": [
+              "lastNotNull"
+            ]
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        }
+      },
+      {
+        "id": 37,
+        "type": "timeseries",
+        "title": "Power",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS}"
+        },
+        "gridPos": {
+          "x": 12,
+          "y": 60,
+          "w": 8,
+          "h": 8
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "expr": "macos_smc_power_watts{job=\"$job\", instance=\"$instance\", key=~\"$power\"}",
+            "legendFormat": "{{key}}",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "watt",
+            "min": 0,
+            "custom": {
+              "lineWidth": 1,
+              "fillOpacity": 10,
+              "showPoints": "never",
+              "stacking": {
+                "mode": "none"
+              }
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "displayMode": "list",
+            "placement": "bottom",
+            "calcs": [
+              "lastNotNull",
+              "mean"
+            ]
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        }
+      },
+      {
+        "id": 38,
+        "type": "timeseries",
+        "title": "Fans",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS}"
+        },
+        "gridPos": {
+          "x": 20,
+          "y": 60,
+          "w": 4,
+          "h": 8
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "expr": "macos_smc_fan_speed_rpm{job=\"$job\", instance=\"$instance\"}",
+            "legendFormat": "fan {{fan}}",
+            "refId": "A"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "expr": "macos_smc_fan_max_rpm{job=\"$job\", instance=\"$instance\"}",
+            "legendFormat": "fan {{fan}} max",
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "rotrpm",
+            "min": 0,
+            "custom": {
+              "lineWidth": 1,
+              "fillOpacity": 0,
+              "showPoints": "never",
+              "stacking": {
+                "mode": "none"
+              }
+            }
+          },
+          "overrides": []
+        },
+        "options": {
+          "legend": {
+            "displayMode": "list",
+            "placement": "bottom",
+            "calcs": []
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
+        }
+      },
+      {
+        "id": 39,
+        "type": "row",
+        "title": "Battery (portables)",
+        "collapsed": true,
+        "gridPos": {
+          "x": 0,
+          "y": 68,
+          "w": 24,
+          "h": 1
+        },
+        "panels": [
+          {
+            "id": 40,
+            "type": "gauge",
+            "title": "Charge",
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "gridPos": {
+              "x": 0,
+              "y": 69,
+              "w": 4,
+              "h": 6
+            },
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "${DS}"
+                },
+                "expr": "100 * macos_battery_charge_ratio{job=\"$job\", instance=\"$instance\"}",
+                "legendFormat": "",
+                "refId": "A"
+              }
+            ],
+            "fieldConfig": {
+              "defaults": {
+                "unit": "percent",
+                "min": 0,
+                "max": 100,
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "red",
+                      "value": null
+                    },
+                    {
+                      "color": "orange",
+                      "value": 20
+                    },
+                    {
+                      "color": "green",
+                      "value": 50
+                    }
                   ]
                 }
               },
+              "overrides": []
+            },
+            "options": {
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "",
+                "values": false
+              },
+              "showThresholdLabels": false,
+              "showThresholdMarkers": true
+            }
+          },
+          {
+            "id": 41,
+            "type": "gauge",
+            "title": "Health",
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "gridPos": {
+              "x": 4,
+              "y": 69,
+              "w": 4,
+              "h": 6
+            },
+            "targets": [
               {
-                "id": "color",
-                "value": {
-                  "mode": "fixed",
-                  "fixedColor": "gray"
-                }
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "${DS}"
+                },
+                "expr": "100 * macos_battery_health_ratio{job=\"$job\", instance=\"$instance\"}",
+                "legendFormat": "",
+                "refId": "A"
               }
-            ]
+            ],
+            "fieldConfig": {
+              "defaults": {
+                "unit": "percent",
+                "min": 0,
+                "max": 100,
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "red",
+                      "value": null
+                    },
+                    {
+                      "color": "orange",
+                      "value": 80
+                    },
+                    {
+                      "color": "green",
+                      "value": 90
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "options": {
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "",
+                "values": false
+              },
+              "showThresholdLabels": false,
+              "showThresholdMarkers": true
+            }
+          },
+          {
+            "id": 42,
+            "type": "stat",
+            "title": "Cycles",
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "gridPos": {
+              "x": 8,
+              "y": 69,
+              "w": 4,
+              "h": 6
+            },
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "${DS}"
+                },
+                "expr": "macos_battery_cycle_count{job=\"$job\", instance=\"$instance\"}",
+                "legendFormat": "",
+                "refId": "A"
+              }
+            ],
+            "fieldConfig": {
+              "defaults": {
+                "unit": "short"
+              },
+              "overrides": []
+            },
+            "options": {
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "",
+                "values": false
+              },
+              "colorMode": "none",
+              "graphMode": "none",
+              "textMode": "auto",
+              "orientation": "auto",
+              "justifyMode": "auto"
+            }
+          },
+          {
+            "id": 43,
+            "type": "timeseries",
+            "title": "Current and voltage",
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "gridPos": {
+              "x": 12,
+              "y": 69,
+              "w": 12,
+              "h": 6
+            },
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "${DS}"
+                },
+                "expr": "macos_battery_current_amperes{job=\"$job\", instance=\"$instance\"}",
+                "legendFormat": "amps (neg = discharging)",
+                "refId": "A"
+              },
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "${DS}"
+                },
+                "expr": "macos_battery_voltage_volts{job=\"$job\", instance=\"$instance\"}",
+                "legendFormat": "volts",
+                "refId": "B"
+              }
+            ],
+            "fieldConfig": {
+              "defaults": {
+                "unit": "short",
+                "custom": {
+                  "lineWidth": 1,
+                  "fillOpacity": 0,
+                  "showPoints": "never",
+                  "stacking": {
+                    "mode": "none"
+                  }
+                }
+              },
+              "overrides": []
+            },
+            "options": {
+              "legend": {
+                "displayMode": "list",
+                "placement": "bottom",
+                "calcs": []
+              },
+              "tooltip": {
+                "mode": "multi",
+                "sort": "desc"
+              }
+            }
           }
         ]
       },
-      "options": {
-        "legend": {
-          "displayMode": "list",
-          "placement": "bottom",
-          "calcs": []
+      {
+        "id": 44,
+        "type": "row",
+        "title": "Exporter health",
+        "collapsed": true,
+        "gridPos": {
+          "x": 0,
+          "y": 69,
+          "w": 24,
+          "h": 1
         },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      }
-    },
-    {
-      "id": 19,
-      "type": "timeseries",
-      "title": "Thermal state and memory pressure",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS}"
-      },
-      "gridPos": {
-        "x": 12,
-        "y": 17,
-        "w": 12,
-        "h": 7
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "expr": "macos_thermal_state{job=\"$job\", instance=\"$instance\"}",
-          "legendFormat": "thermal (0-3)",
-          "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "expr": "macos_memory_pressure_level{job=\"$job\", instance=\"$instance\"}",
-          "legendFormat": "pressure (1/2/4)",
-          "refId": "B"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "short",
-          "min": 0,
-          "custom": {
-            "lineWidth": 1,
-            "fillOpacity": 0,
-            "showPoints": "never",
-            "stacking": {
-              "mode": "none"
-            }
-          }
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "displayMode": "list",
-          "placement": "bottom",
-          "calcs": []
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      }
-    },
-    {
-      "id": 20,
-      "type": "row",
-      "title": "Memory",
-      "collapsed": false,
-      "gridPos": {
-        "x": 0,
-        "y": 24,
-        "w": 24,
-        "h": 1
-      },
-      "panels": []
-    },
-    {
-      "id": 21,
-      "type": "timeseries",
-      "title": "Memory breakdown",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS}"
-      },
-      "gridPos": {
-        "x": 0,
-        "y": 25,
-        "w": 12,
-        "h": 8
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "expr": "macos_memory_app_bytes{job=\"$job\", instance=\"$instance\"}",
-          "legendFormat": "app",
-          "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "expr": "node_memory_wired_bytes{job=\"$job\", instance=\"$instance\"}",
-          "legendFormat": "wired",
-          "refId": "B"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "expr": "node_memory_compressed_bytes{job=\"$job\", instance=\"$instance\"}",
-          "legendFormat": "compressed",
-          "refId": "C"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "expr": "macos_memory_external_bytes{job=\"$job\", instance=\"$instance\"}",
-          "legendFormat": "file cache",
-          "refId": "D"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "expr": "node_memory_free_bytes{job=\"$job\", instance=\"$instance\"}",
-          "legendFormat": "free",
-          "refId": "E"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "bytes",
-          "min": 0,
-          "custom": {
-            "lineWidth": 1,
-            "fillOpacity": 40,
-            "showPoints": "never",
-            "stacking": {
-              "mode": "normal"
-            }
-          }
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "displayMode": "list",
-          "placement": "bottom",
-          "calcs": []
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      }
-    },
-    {
-      "id": 22,
-      "type": "timeseries",
-      "title": "Swap",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS}"
-      },
-      "gridPos": {
-        "x": 12,
-        "y": 25,
-        "w": 6,
-        "h": 8
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "expr": "node_memory_swap_used_bytes{job=\"$job\", instance=\"$instance\"}",
-          "legendFormat": "used",
-          "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "expr": "node_memory_swap_total_bytes{job=\"$job\", instance=\"$instance\"}",
-          "legendFormat": "total",
-          "refId": "B"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "bytes",
-          "min": 0,
-          "custom": {
-            "lineWidth": 1,
-            "fillOpacity": 20,
-            "showPoints": "never",
-            "stacking": {
-              "mode": "none"
-            }
-          }
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "displayMode": "list",
-          "placement": "bottom",
-          "calcs": []
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      }
-    },
-    {
-      "id": 23,
-      "type": "timeseries",
-      "title": "Paging and compression",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS}"
-      },
-      "gridPos": {
-        "x": 18,
-        "y": 25,
-        "w": 6,
-        "h": 8
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "expr": "rate(macos_memory_pageins_total{job=\"$job\", instance=\"$instance\"}[$__rate_interval])",
-          "legendFormat": "page-ins/s",
-          "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "expr": "rate(macos_memory_pageouts_total{job=\"$job\", instance=\"$instance\"}[$__rate_interval])",
-          "legendFormat": "page-outs/s",
-          "refId": "B"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "expr": "rate(macos_memory_compressions_total{job=\"$job\", instance=\"$instance\"}[$__rate_interval])",
-          "legendFormat": "compressions/s",
-          "refId": "C"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "expr": "rate(macos_memory_decompressions_total{job=\"$job\", instance=\"$instance\"}[$__rate_interval])",
-          "legendFormat": "decompressions/s",
-          "refId": "D"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "ops",
-          "custom": {
-            "lineWidth": 1,
-            "fillOpacity": 0,
-            "showPoints": "never",
-            "stacking": {
-              "mode": "none"
-            }
-          }
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "displayMode": "list",
-          "placement": "bottom",
-          "calcs": []
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      }
-    },
-    {
-      "id": 24,
-      "type": "row",
-      "title": "GPU",
-      "collapsed": false,
-      "gridPos": {
-        "x": 0,
-        "y": 33,
-        "w": 24,
-        "h": 1
-      },
-      "panels": []
-    },
-    {
-      "id": 25,
-      "type": "timeseries",
-      "title": "GPU utilisation",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS}"
-      },
-      "gridPos": {
-        "x": 0,
-        "y": 34,
-        "w": 12,
-        "h": 7
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "expr": "100 * macos_gpu_device_utilization_ratio{job=\"$job\", instance=\"$instance\"}",
-          "legendFormat": "device",
-          "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "expr": "100 * macos_gpu_renderer_utilization_ratio{job=\"$job\", instance=\"$instance\"}",
-          "legendFormat": "renderer",
-          "refId": "B"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "expr": "100 * macos_gpu_tiler_utilization_ratio{job=\"$job\", instance=\"$instance\"}",
-          "legendFormat": "tiler",
-          "refId": "C"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "percent",
-          "min": 0,
-          "max": 100,
-          "custom": {
-            "lineWidth": 1,
-            "fillOpacity": 10,
-            "showPoints": "never",
-            "stacking": {
-              "mode": "none"
-            }
-          }
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "displayMode": "list",
-          "placement": "bottom",
-          "calcs": []
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      }
-    },
-    {
-      "id": 26,
-      "type": "timeseries",
-      "title": "GPU memory",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS}"
-      },
-      "gridPos": {
-        "x": 12,
-        "y": 34,
-        "w": 12,
-        "h": 7
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "expr": "macos_gpu_memory_in_use_bytes{job=\"$job\", instance=\"$instance\"}",
-          "legendFormat": "in use",
-          "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "expr": "macos_gpu_memory_allocated_bytes{job=\"$job\", instance=\"$instance\"}",
-          "legendFormat": "allocated",
-          "refId": "B"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "expr": "macos_gpu_memory_driver_in_use_bytes{job=\"$job\", instance=\"$instance\"}",
-          "legendFormat": "driver",
-          "refId": "C"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "bytes",
-          "min": 0,
-          "custom": {
-            "lineWidth": 1,
-            "fillOpacity": 10,
-            "showPoints": "never",
-            "stacking": {
-              "mode": "none"
-            }
-          }
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "displayMode": "list",
-          "placement": "bottom",
-          "calcs": []
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      }
-    },
-    {
-      "id": 27,
-      "type": "row",
-      "title": "Storage",
-      "collapsed": false,
-      "gridPos": {
-        "x": 0,
-        "y": 41,
-        "w": 24,
-        "h": 1
-      },
-      "panels": []
-    },
-    {
-      "id": 28,
-      "type": "bargauge",
-      "title": "Filesystem used",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS}"
-      },
-      "gridPos": {
-        "x": 0,
-        "y": 42,
-        "w": 8,
-        "h": 8
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "expr": "100 * (1 - node_filesystem_avail_bytes{job=\"$job\", instance=\"$instance\", fstype!=\"devfs\"} / node_filesystem_size_bytes{job=\"$job\", instance=\"$instance\", fstype!=\"devfs\"})",
-          "legendFormat": "{{mountpoint}}",
-          "refId": "A",
-          "instant": true,
-          "range": false
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "percent",
-          "min": 0,
-          "max": 100,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
+        "panels": [
+          {
+            "id": 45,
+            "type": "timeseries",
+            "title": "Collector duration",
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "gridPos": {
+              "x": 0,
+              "y": 70,
+              "w": 12,
+              "h": 7
+            },
+            "targets": [
               {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "orange",
-                "value": 80
-              },
-              {
-                "color": "red",
-                "value": 90
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "orientation": "horizontal",
-        "displayMode": "gradient",
-        "showUnfilled": true,
-        "namePlacement": "left",
-        "sizing": "auto"
-      }
-    },
-    {
-      "id": 29,
-      "type": "timeseries",
-      "title": "Disk throughput",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS}"
-      },
-      "gridPos": {
-        "x": 8,
-        "y": 42,
-        "w": 8,
-        "h": 8
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "expr": "rate(node_disk_read_bytes_total{job=\"$job\", instance=\"$instance\"}[$__rate_interval])",
-          "legendFormat": "{{device}} read",
-          "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "expr": "-rate(node_disk_written_bytes_total{job=\"$job\", instance=\"$instance\"}[$__rate_interval])",
-          "legendFormat": "{{device}} write",
-          "refId": "B"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "Bps",
-          "custom": {
-            "lineWidth": 1,
-            "fillOpacity": 20,
-            "showPoints": "never",
-            "stacking": {
-              "mode": "none"
-            }
-          }
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "displayMode": "list",
-          "placement": "bottom",
-          "calcs": []
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      }
-    },
-    {
-      "id": 30,
-      "type": "timeseries",
-      "title": "Disk IOPS",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS}"
-      },
-      "gridPos": {
-        "x": 16,
-        "y": 42,
-        "w": 8,
-        "h": 8
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "expr": "rate(node_disk_reads_completed_total{job=\"$job\", instance=\"$instance\"}[$__rate_interval])",
-          "legendFormat": "{{device}} reads",
-          "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "expr": "-rate(node_disk_writes_completed_total{job=\"$job\", instance=\"$instance\"}[$__rate_interval])",
-          "legendFormat": "{{device}} writes",
-          "refId": "B"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "iops",
-          "custom": {
-            "lineWidth": 1,
-            "fillOpacity": 20,
-            "showPoints": "never",
-            "stacking": {
-              "mode": "none"
-            }
-          }
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "displayMode": "list",
-          "placement": "bottom",
-          "calcs": []
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      }
-    },
-    {
-      "id": 31,
-      "type": "row",
-      "title": "Network",
-      "collapsed": false,
-      "gridPos": {
-        "x": 0,
-        "y": 50,
-        "w": 24,
-        "h": 1
-      },
-      "panels": []
-    },
-    {
-      "id": 32,
-      "type": "timeseries",
-      "title": "Network throughput",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS}"
-      },
-      "gridPos": {
-        "x": 0,
-        "y": 51,
-        "w": 12,
-        "h": 8
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "expr": "rate(node_network_receive_bytes_total{job=\"$job\", instance=\"$instance\", device=~\"$netdev\"}[$__rate_interval]) * 8",
-          "legendFormat": "{{device}} rx",
-          "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "expr": "-rate(node_network_transmit_bytes_total{job=\"$job\", instance=\"$instance\", device=~\"$netdev\"}[$__rate_interval]) * 8",
-          "legendFormat": "{{device}} tx",
-          "refId": "B"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "bps",
-          "custom": {
-            "lineWidth": 1,
-            "fillOpacity": 20,
-            "showPoints": "never",
-            "stacking": {
-              "mode": "none"
-            }
-          }
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "displayMode": "list",
-          "placement": "bottom",
-          "calcs": []
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      }
-    },
-    {
-      "id": 33,
-      "type": "timeseries",
-      "title": "Packets",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS}"
-      },
-      "gridPos": {
-        "x": 12,
-        "y": 51,
-        "w": 6,
-        "h": 8
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "expr": "rate(node_network_receive_packets_total{job=\"$job\", instance=\"$instance\", device=~\"$netdev\"}[$__rate_interval])",
-          "legendFormat": "{{device}} rx",
-          "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "expr": "-rate(node_network_transmit_packets_total{job=\"$job\", instance=\"$instance\", device=~\"$netdev\"}[$__rate_interval])",
-          "legendFormat": "{{device}} tx",
-          "refId": "B"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "pps",
-          "custom": {
-            "lineWidth": 1,
-            "fillOpacity": 20,
-            "showPoints": "never",
-            "stacking": {
-              "mode": "none"
-            }
-          }
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "displayMode": "list",
-          "placement": "bottom",
-          "calcs": []
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      }
-    },
-    {
-      "id": 34,
-      "type": "timeseries",
-      "title": "Errors and drops",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS}"
-      },
-      "gridPos": {
-        "x": 18,
-        "y": 51,
-        "w": 6,
-        "h": 8
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "expr": "rate(node_network_receive_errs_total{job=\"$job\", instance=\"$instance\", device=~\"$netdev\"}[$__rate_interval])",
-          "legendFormat": "{{device}} rx errs",
-          "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "expr": "rate(node_network_transmit_errs_total{job=\"$job\", instance=\"$instance\", device=~\"$netdev\"}[$__rate_interval])",
-          "legendFormat": "{{device}} tx errs",
-          "refId": "B"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "expr": "rate(node_network_receive_drop_total{job=\"$job\", instance=\"$instance\", device=~\"$netdev\"}[$__rate_interval])",
-          "legendFormat": "{{device}} rx drops",
-          "refId": "C"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "expr": "rate(node_network_transmit_drop_total{job=\"$job\", instance=\"$instance\", device=~\"$netdev\"}[$__rate_interval])",
-          "legendFormat": "{{device}} tx drops",
-          "refId": "D"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "pps",
-          "custom": {
-            "lineWidth": 1,
-            "fillOpacity": 0,
-            "showPoints": "never",
-            "stacking": {
-              "mode": "none"
-            }
-          }
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "displayMode": "list",
-          "placement": "bottom",
-          "calcs": []
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      }
-    },
-    {
-      "id": 35,
-      "type": "row",
-      "title": "Sensors and power",
-      "collapsed": false,
-      "gridPos": {
-        "x": 0,
-        "y": 59,
-        "w": 24,
-        "h": 1
-      },
-      "panels": []
-    },
-    {
-      "id": 36,
-      "type": "timeseries",
-      "title": "Temperatures",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS}"
-      },
-      "gridPos": {
-        "x": 0,
-        "y": 60,
-        "w": 12,
-        "h": 8
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "expr": "macos_smc_temperature_celsius{job=\"$job\", instance=\"$instance\", sensor=~\"$sensor\"}",
-          "legendFormat": "{{sensor}}",
-          "refId": "A"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "celsius",
-          "custom": {
-            "lineWidth": 1,
-            "fillOpacity": 0,
-            "showPoints": "never",
-            "stacking": {
-              "mode": "none"
-            }
-          }
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "displayMode": "list",
-          "placement": "bottom",
-          "calcs": [
-            "lastNotNull"
-          ]
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      }
-    },
-    {
-      "id": 37,
-      "type": "timeseries",
-      "title": "Power",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS}"
-      },
-      "gridPos": {
-        "x": 12,
-        "y": 60,
-        "w": 8,
-        "h": 8
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "expr": "macos_smc_power_watts{job=\"$job\", instance=\"$instance\", key=~\"$power\"}",
-          "legendFormat": "{{key}}",
-          "refId": "A"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "watt",
-          "min": 0,
-          "custom": {
-            "lineWidth": 1,
-            "fillOpacity": 10,
-            "showPoints": "never",
-            "stacking": {
-              "mode": "none"
-            }
-          }
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "displayMode": "list",
-          "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "mean"
-          ]
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      }
-    },
-    {
-      "id": 38,
-      "type": "timeseries",
-      "title": "Fans",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS}"
-      },
-      "gridPos": {
-        "x": 20,
-        "y": 60,
-        "w": 4,
-        "h": 8
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "expr": "macos_smc_fan_speed_rpm{job=\"$job\", instance=\"$instance\"}",
-          "legendFormat": "fan {{fan}}",
-          "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "expr": "macos_smc_fan_max_rpm{job=\"$job\", instance=\"$instance\"}",
-          "legendFormat": "fan {{fan}} max",
-          "refId": "B"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "rotrpm",
-          "min": 0,
-          "custom": {
-            "lineWidth": 1,
-            "fillOpacity": 0,
-            "showPoints": "never",
-            "stacking": {
-              "mode": "none"
-            }
-          }
-        },
-        "overrides": []
-      },
-      "options": {
-        "legend": {
-          "displayMode": "list",
-          "placement": "bottom",
-          "calcs": []
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
-        }
-      }
-    },
-    {
-      "id": 39,
-      "type": "row",
-      "title": "Battery (portables)",
-      "collapsed": true,
-      "gridPos": {
-        "x": 0,
-        "y": 68,
-        "w": 24,
-        "h": 1
-      },
-      "panels": [
-        {
-          "id": 40,
-          "type": "gauge",
-          "title": "Charge",
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "gridPos": {
-            "x": 0,
-            "y": 69,
-            "w": 4,
-            "h": 6
-          },
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS}"
-              },
-              "expr": "100 * macos_battery_charge_ratio{job=\"$job\", instance=\"$instance\"}",
-              "legendFormat": "",
-              "refId": "A"
-            }
-          ],
-          "fieldConfig": {
-            "defaults": {
-              "unit": "percent",
-              "min": 0,
-              "max": 100,
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "red",
-                    "value": null
-                  },
-                  {
-                    "color": "orange",
-                    "value": 20
-                  },
-                  {
-                    "color": "green",
-                    "value": 50
-                  }
-                ]
-              }
-            },
-            "overrides": []
-          },
-          "options": {
-            "reduceOptions": {
-              "calcs": [
-                "lastNotNull"
-              ],
-              "fields": "",
-              "values": false
-            },
-            "showThresholdLabels": false,
-            "showThresholdMarkers": true
-          }
-        },
-        {
-          "id": 41,
-          "type": "gauge",
-          "title": "Health",
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "gridPos": {
-            "x": 4,
-            "y": 69,
-            "w": 4,
-            "h": 6
-          },
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS}"
-              },
-              "expr": "100 * macos_battery_health_ratio{job=\"$job\", instance=\"$instance\"}",
-              "legendFormat": "",
-              "refId": "A"
-            }
-          ],
-          "fieldConfig": {
-            "defaults": {
-              "unit": "percent",
-              "min": 0,
-              "max": 100,
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "red",
-                    "value": null
-                  },
-                  {
-                    "color": "orange",
-                    "value": 80
-                  },
-                  {
-                    "color": "green",
-                    "value": 90
-                  }
-                ]
-              }
-            },
-            "overrides": []
-          },
-          "options": {
-            "reduceOptions": {
-              "calcs": [
-                "lastNotNull"
-              ],
-              "fields": "",
-              "values": false
-            },
-            "showThresholdLabels": false,
-            "showThresholdMarkers": true
-          }
-        },
-        {
-          "id": 42,
-          "type": "stat",
-          "title": "Cycles",
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "gridPos": {
-            "x": 8,
-            "y": 69,
-            "w": 4,
-            "h": 6
-          },
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS}"
-              },
-              "expr": "macos_battery_cycle_count{job=\"$job\", instance=\"$instance\"}",
-              "legendFormat": "",
-              "refId": "A"
-            }
-          ],
-          "fieldConfig": {
-            "defaults": {
-              "unit": "short"
-            },
-            "overrides": []
-          },
-          "options": {
-            "reduceOptions": {
-              "calcs": [
-                "lastNotNull"
-              ],
-              "fields": "",
-              "values": false
-            },
-            "colorMode": "none",
-            "graphMode": "none",
-            "textMode": "auto",
-            "orientation": "auto",
-            "justifyMode": "auto"
-          }
-        },
-        {
-          "id": 43,
-          "type": "timeseries",
-          "title": "Current and voltage",
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "gridPos": {
-            "x": 12,
-            "y": 69,
-            "w": 12,
-            "h": 6
-          },
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS}"
-              },
-              "expr": "macos_battery_current_amperes{job=\"$job\", instance=\"$instance\"}",
-              "legendFormat": "amps (neg = discharging)",
-              "refId": "A"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS}"
-              },
-              "expr": "macos_battery_voltage_volts{job=\"$job\", instance=\"$instance\"}",
-              "legendFormat": "volts",
-              "refId": "B"
-            }
-          ],
-          "fieldConfig": {
-            "defaults": {
-              "unit": "short",
-              "custom": {
-                "lineWidth": 1,
-                "fillOpacity": 0,
-                "showPoints": "never",
-                "stacking": {
-                  "mode": "none"
-                }
-              }
-            },
-            "overrides": []
-          },
-          "options": {
-            "legend": {
-              "displayMode": "list",
-              "placement": "bottom",
-              "calcs": []
-            },
-            "tooltip": {
-              "mode": "multi",
-              "sort": "desc"
-            }
-          }
-        }
-      ]
-    },
-    {
-      "id": 44,
-      "type": "row",
-      "title": "Exporter health",
-      "collapsed": true,
-      "gridPos": {
-        "x": 0,
-        "y": 69,
-        "w": 24,
-        "h": 1
-      },
-      "panels": [
-        {
-          "id": 45,
-          "type": "timeseries",
-          "title": "Collector duration",
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "gridPos": {
-            "x": 0,
-            "y": 70,
-            "w": 12,
-            "h": 7
-          },
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS}"
-              },
-              "expr": "pulseki_scrape_collector_duration_seconds{job=\"$job\", instance=\"$instance\"}",
-              "legendFormat": "{{collector}}",
-              "refId": "A"
-            }
-          ],
-          "fieldConfig": {
-            "defaults": {
-              "unit": "s",
-              "custom": {
-                "lineWidth": 1,
-                "fillOpacity": 0,
-                "showPoints": "never",
-                "stacking": {
-                  "mode": "none"
-                }
-              }
-            },
-            "overrides": []
-          },
-          "options": {
-            "legend": {
-              "displayMode": "list",
-              "placement": "bottom",
-              "calcs": []
-            },
-            "tooltip": {
-              "mode": "multi",
-              "sort": "desc"
-            }
-          }
-        },
-        {
-          "id": 46,
-          "type": "table",
-          "title": "Collector status",
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "gridPos": {
-            "x": 12,
-            "y": 70,
-            "w": 6,
-            "h": 7
-          },
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS}"
-              },
-              "expr": "pulseki_scrape_collector_success{job=\"$job\", instance=\"$instance\"}",
-              "legendFormat": "",
-              "refId": "A",
-              "instant": true,
-              "range": false
-            }
-          ],
-          "fieldConfig": {
-            "defaults": {
-              "unit": "short",
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "red",
-                    "value": null
-                  },
-                  {
-                    "color": "green",
-                    "value": 1
-                  }
-                ]
-              },
-              "color": {
-                "mode": "thresholds"
-              }
-            },
-            "overrides": [
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "ok"
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "${DS}"
                 },
-                "properties": [
-                  {
-                    "id": "custom.cellOptions",
-                    "value": {
-                      "type": "color-background"
+                "expr": "pulseki_scrape_collector_duration_seconds{job=\"$job\", instance=\"$instance\"}",
+                "legendFormat": "{{collector}}",
+                "refId": "A"
+              }
+            ],
+            "fieldConfig": {
+              "defaults": {
+                "unit": "s",
+                "custom": {
+                  "lineWidth": 1,
+                  "fillOpacity": 0,
+                  "showPoints": "never",
+                  "stacking": {
+                    "mode": "none"
+                  }
+                }
+              },
+              "overrides": []
+            },
+            "options": {
+              "legend": {
+                "displayMode": "list",
+                "placement": "bottom",
+                "calcs": []
+              },
+              "tooltip": {
+                "mode": "multi",
+                "sort": "desc"
+              }
+            }
+          },
+          {
+            "id": 46,
+            "type": "table",
+            "title": "Collector status",
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
+            },
+            "gridPos": {
+              "x": 12,
+              "y": 70,
+              "w": 6,
+              "h": 7
+            },
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "${DS}"
+                },
+                "expr": "pulseki_scrape_collector_success{job=\"$job\", instance=\"$instance\"}",
+                "legendFormat": "",
+                "refId": "A",
+                "instant": true,
+                "range": false
+              }
+            ],
+            "fieldConfig": {
+              "defaults": {
+                "unit": "short",
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "red",
+                      "value": null
+                    },
+                    {
+                      "color": "green",
+                      "value": 1
                     }
-                  }
-                ]
-              }
-            ]
-          },
-          "options": {
-            "showHeader": true,
-            "sortBy": []
-          },
-          "transformations": [
-            {
-              "id": "labelsToFields",
-              "options": {
-                "valueLabel": ""
-              }
-            },
-            {
-              "id": "organize",
-              "options": {
-                "excludeByName": {
-                  "Time": true,
-                  "__name__": true,
-                  "instance": true,
-                  "job": true
+                  ]
                 },
-                "renameByName": {
-                  "Value": "ok"
+                "color": {
+                  "mode": "thresholds"
+                }
+              },
+              "overrides": [
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "ok"
+                  },
+                  "properties": [
+                    {
+                      "id": "custom.cellOptions",
+                      "value": {
+                        "type": "color-background"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            "options": {
+              "showHeader": true,
+              "sortBy": []
+            },
+            "transformations": [
+              {
+                "id": "labelsToFields",
+                "options": {
+                  "valueLabel": ""
+                }
+              },
+              {
+                "id": "organize",
+                "options": {
+                  "excludeByName": {
+                    "Time": true,
+                    "__name__": true,
+                    "instance": true,
+                    "job": true
+                  },
+                  "renameByName": {
+                    "Value": "ok"
+                  }
                 }
               }
-            }
-          ]
-        },
-        {
-          "id": 47,
-          "type": "stat",
-          "title": "Push",
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS}"
-          },
-          "gridPos": {
-            "x": 18,
-            "y": 70,
-            "w": 6,
-            "h": 7
-          },
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS}"
-              },
-              "expr": "time() - pulseki_push_last_success_timestamp_seconds{job=\"$job\", instance=\"$instance\"}",
-              "legendFormat": "since last success",
-              "refId": "A"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS}"
-              },
-              "expr": "pulseki_push_consecutive_failures{job=\"$job\", instance=\"$instance\"}",
-              "legendFormat": "consecutive failures",
-              "refId": "B"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS}"
-              },
-              "expr": "process_resident_memory_bytes{job=\"$job\", instance=\"$instance\"}",
-              "legendFormat": "RSS",
-              "refId": "C"
-            }
-          ],
-          "fieldConfig": {
-            "defaults": {
-              "unit": "short"
-            },
-            "overrides": [
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "since last success"
-                },
-                "properties": [
-                  {
-                    "id": "unit",
-                    "value": "s"
-                  }
-                ]
-              },
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "RSS"
-                },
-                "properties": [
-                  {
-                    "id": "unit",
-                    "value": "bytes"
-                  }
-                ]
-              }
             ]
           },
-          "options": {
-            "reduceOptions": {
-              "calcs": [
-                "lastNotNull"
-              ],
-              "fields": "",
-              "values": false
+          {
+            "id": 47,
+            "type": "stat",
+            "title": "Push",
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${DS}"
             },
-            "colorMode": "none",
-            "graphMode": "none",
-            "textMode": "auto",
-            "orientation": "auto",
-            "justifyMode": "auto"
+            "gridPos": {
+              "x": 18,
+              "y": 70,
+              "w": 6,
+              "h": 7
+            },
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "${DS}"
+                },
+                "expr": "time() - pulseki_push_last_success_timestamp_seconds{job=\"$job\", instance=\"$instance\"}",
+                "legendFormat": "since last success",
+                "refId": "A"
+              },
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "${DS}"
+                },
+                "expr": "pulseki_push_consecutive_failures{job=\"$job\", instance=\"$instance\"}",
+                "legendFormat": "consecutive failures",
+                "refId": "B"
+              },
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "${DS}"
+                },
+                "expr": "process_resident_memory_bytes{job=\"$job\", instance=\"$instance\"}",
+                "legendFormat": "RSS",
+                "refId": "C"
+              }
+            ],
+            "fieldConfig": {
+              "defaults": {
+                "unit": "short"
+              },
+              "overrides": [
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "since last success"
+                  },
+                  "properties": [
+                    {
+                      "id": "unit",
+                      "value": "s"
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "RSS"
+                  },
+                  "properties": [
+                    {
+                      "id": "unit",
+                      "value": "bytes"
+                    }
+                  ]
+                }
+              ]
+            },
+            "options": {
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "",
+                "values": false
+              },
+              "colorMode": "none",
+              "graphMode": "none",
+              "textMode": "auto",
+              "orientation": "auto",
+              "justifyMode": "auto"
+            }
           }
-        }
-      ]
-    }
-  ]
+        ]
+      }
+    ]
+  }
 }

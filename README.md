@@ -47,7 +47,11 @@ scrape_configs:
 Then import [dashboards/pulseki.json](dashboards/pulseki.json) into Grafana
 (Dashboards → New → Import). It has an Instance dropdown for switching between
 Macs, plus rows for CPU, memory, GPU, storage, network, sensors and power,
-battery, and exporter health. Grafana dashboard 1860 ("Node Exporter Full")
+battery, and exporter health. That file is the Kubernetes-style resource that
+Grafana 12.2 and later (including Grafana Cloud) expect; for Grafana 12.1 or
+older, Terraform, or file provisioning use
+[dashboards/pulseki-classic.json](dashboards/pulseki-classic.json), which is
+the same dashboard as a plain object. Grafana dashboard 1860 ("Node Exporter Full")
 also largely works thanks to the shared metric names.
 
 ## Configuration
