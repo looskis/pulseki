@@ -2,7 +2,7 @@ class Pulseki < Formula
   desc "Prometheus exporter for macOS: CPU, GPU, memory, disk, network, sensors, battery"
   homepage "https://github.com/looskis/pulseki"
   url "https://github.com/looskis/pulseki/archive/refs/tags/v0.1.0.tar.gz"
-  sha256 "0000000000000000000000000000000000000000000000000000000000000000"
+  sha256 "9a5813a3e49b09beec9e1927ccfdbff874c32dbcd0eb641c4fb531f64b00f58e"
   license "MIT"
   head "https://github.com/looskis/pulseki.git", branch: "main"
 
