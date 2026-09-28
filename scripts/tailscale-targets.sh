@@ -51,7 +51,7 @@ trap 'rm -f "$tmp"' EXIT
   | map({
       targets: [ (.DNSName | rtrimstr(".")) + ":" + $port ],
       labels: {
-        instance: .HostName,
+        instance: (.DNSName | split(".")[0]),
         os: .OS,
         tailscale_tags: ((.Tags // []) | join(","))
       }

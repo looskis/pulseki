@@ -93,7 +93,7 @@ with `StartInterval` 60, or keep a static target list instead. Prometheus
 re-reads `file_sd` files on change; no restart is needed.
 
 The script writes one target per online Mac with its MagicDNS name and labels
-`instance` (the Tailscale hostname), `os` and `tailscale_tags`. Offline Macs
+`instance` (the MagicDNS short name, lowercase), `os` and `tailscale_tags`. Offline Macs
 are omitted so they don't show as down; pass `--include-offline` if you would
 rather alert on them.
 
